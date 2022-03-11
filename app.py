@@ -29,6 +29,7 @@ def result():
         coor.append(np.mean(data))
     coor[0] = 100-coor[0]
     coor[1] = 100-coor[1]
+    coor = [(x-50)*1.5 for x in coor] #-50から50の値に中心をずらして1.5倍に誇張
     dists = []
     component = pd.read_csv("component.csv").values.tolist()
     for i,con in enumerate(component):  # すべての料理候補との距離を算出
