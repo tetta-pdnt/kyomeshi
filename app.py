@@ -22,21 +22,25 @@ def choice():
 @app.route('/result', methods=['GET','POST'])
 def result():
     array = request.form.getlist("coor")
-    array = np.array(array).reshape(-1,5).T.tolist()
+    array = np.array(array).reshape(-1,5)
+    personNum = array.shape[0]
+    array = array.T.tolist()
     array = [[int(s) for s in col] for col in array]
     coor = []
     for data in array:  # 平均を算出
         coor.append(np.mean(data))
     coor[0] = 100-coor[0]
     coor[1] = 100-coor[1]
-    coor = [(x-50)*1.5 for x in coor] #-50から50の値に中心をずらして1.5倍に誇張
+    coor = [(x-50)*np.sqrt(personNum) for x in coor] #-50から50の値に中心をずらして1.5倍に誇張
     dists = []
     component = pd.read_csv("component.csv").values.tolist()
-    for i,con in enumerate(component):  # すべての料理候補との距離を算出
+    for con in component:  # すべての料理候補との距離を算出
         con = con[1:]
         dists.append(dist(coor, con))
-    prob = [x/sum(dists) for x in dists]
-    result = np.random.choice(len(prob),size=3,p=prob).tolist()
+    # s = [max(dists)-x for x in dists]
+    s = [np.exp((-int(x))^2) for x in dists]
+    prob = [x/sum(s) for x in s]
+    result = np.random.choice(len(prob),size=3,p=prob,replace=False).tolist()
     result = [component[x][0] for x in result]
     # result = []
     # dists.sort(key=lambda x:x[1])
