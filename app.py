@@ -27,6 +27,8 @@ def result():
     coor = []
     for data in array:  # 平均を算出
         coor.append(np.mean(data))
+    coor[0] = 100-coor[0]
+    coor[1] = 100-coor[1]
     dists = []
     component = pd.read_csv("component.csv").values.tolist()
     for i,con in enumerate(component):  # すべての料理候補との距離を算出
