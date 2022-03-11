@@ -34,10 +34,14 @@ def result():
     component = pd.read_csv("component.csv").values.tolist()
     for i,con in enumerate(component):  # すべての料理候補との距離を算出
         con = con[1:]
-        dists.append((i,dist(coor, con)))
-    result = []
-    dists.sort(key=lambda x:x[1])
-    result = [component[x[0]][0] for x in dists[:3]]
+        dists.append(dist(coor, con))
+    prob = [x/sum(dists) for x in dists]
+    result = np.random.choice(len(prob),size=3,p=prob).tolist()
+    result = [component[x][0] for x in result]
+    # result = []
+    # dists.sort(key=lambda x:x[1])
+    # result = [component[x[0]][0] for x in dists[:3]]
+
     # api_key = config.HOTPEPPER_API_KEY
 
     # i_start = 1
