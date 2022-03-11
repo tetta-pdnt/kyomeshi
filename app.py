@@ -1,84 +1,71 @@
-from flask import Flask, render_template, request, redirect, url_for, g
-import json
+from flask import Flask, render_template, request
 import numpy as np
 import pandas as pd
 from math import dist
-import json
-# import requests
 # config.py
-# import config
+import config
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
-# db = SQLAlchemy(app)
 
-# class PersonNum(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     num = db.Column(db.Integer)
-
-# class Coor(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     junky = db.Column(db.Integer)
-#     spicy = db.Column(db.Integer)
-#     noisy = db.Column(db.Integer)
-#     appetite = db.Column(db.Integer)
 
 @app.route('/')
 def index():
     return render_template('/index.html')
 
-
-
-# array = [[] for _ in range(4)]
 @app.route('/choice', methods=['POST'])
 def choice():
-    # comp = ["calorie","spisy","amount","strong","share"]
-    # if str(request.referrer)[-7:]!="/choice":
-    #     g.personNum = request.form.get('personNum')
     personNum = request.form.get('personNum')
-    #     g.count = 0
-    # else:
-    #     for (c,col) in zip(comp,g.array):
-    #         col.append(request.form.get(c))
-    #     print(g.array)
-
-    # if g.count == g.personNum:
-    #     return render_template('result.html',array = g.array)
-    # else:
-    #     g.count += 1
-    #     return render_template('choice.html',count=g.count)
+    if personNum=="人数を選んでね":
+        return render_template('/index.html')
     return render_template('/choice.html',personNum=personNum)
-
-# @app.route('/json',methods=['GET','POST'])
-# def json():
-#     array = request.json
-#     print(type(array))
-#     print(array)
 
 @app.route('/result', methods=['GET','POST'])
 def result():
-    # array = request.get_data()
-    # array = array.decode('utf-8')
-    # # array = eval(str(array))
-    # # array = str(array)
-    # array = array.replace('"',"")
-    array = request.json
-    print(type(array))
-    print(array)
-    # coor = []
-    # for data in array:  # 平均を算出
-    #     coor.append(np.mean(data))
-    # dists = []
-    # component = pd.read_csv("component.csv").values.tolist()
-    # for con in component:  # すべての料理候補との距離を算出
-    #     con = [(n-1)*25 for n in con[1:]]  # CSVの1-5の値を0,25,50,75,100に変換
-    #     dists.append(dist(coor, con))
-    # result = []
-    # for i in range(dists.count(min(dists))):  # 最短距離の料理をすべて出力
-    #     m = dists.index(min(dists))
-    #     result.append(component[m][0])
-    #     dists.pop(m)
-    return render_template('/result.html',array = str(array))
+    array = request.form.getlist("coor")
+    array = np.array(array).reshape(-1,5).T.tolist()
+    array = [[int(s) for s in col] for col in array]
+    coor = []
+    for data in array:  # 平均を算出
+        coor.append(np.mean(data))
+    dists = []
+    component = pd.read_csv("component.csv").values.tolist()
+    for i,con in enumerate(component):  # すべての料理候補との距離を算出
+        con = con[1:]
+        dists.append((i,dist(coor, con)))
+    result = []
+    dists.sort(key=lambda x:x[1])
+    result = [component[x[0]][0] for x in dists[:3]]
+    # api_key = config.HOTPEPPER_API_KEY
+
+    # i_start = 1
+    # restaurant_datas=[]
+
+    # while True:
+    #     query = {
+    #         'key': api_key,
+    #         'large_area': 'Z011', # 東京
+    #         'order': 1, #名前の順
+    #         'start': i_start, #検索結果の何番目から出力するか
+    #         'count': 100, #最大取得件数
+    #         'format': 'json',
+    #         'keyword': result[0]
+    #     }
+    #     url_base = 'http://webservice.recruit.co.jp/hotpepper/gourmet/v1/'
+    #     responce = requests.get(url_base, query)
+    #     result = json.loads(responce.text)['results']['shop']
+    #     if len(result) == 0:
+    #         break
+    #     for restaurant in result:
+    #         restaurant_datas.append([restaurant['name'], restaurant['address'], restaurant['budget']['code'], restaurant['genre']['code']])
+    #     i_start += 100
+    #     print(i_start)
+
+    # columns = ['name', 'address', 'budget', 'genre']
+    # df_restaurants = pd.DataFrame(restaurant_datas, columns=columns)
+    # df_restaurants.to_csv('restaurants_tokyo.csv')
+    return render_template('/result.html',result0=result[0],
+                                          result1=result[1],
+                                          result2=result[2])
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()

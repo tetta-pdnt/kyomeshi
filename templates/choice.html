@@ -1,89 +1,59 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8"/>
-  <title>sample1</title>
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-</head>
-<body>
-  <h1 id="num">1人目</h1>
-  <form id="form" name="form1" action="#">
-    <input type="range" class="form-range" id="calorieRange">
-    <input type="number" id="calorie" min="0" max="100" value="50"><br>
-    <input type="range" class="form-range" id="customRange1">
-    <input type="number" id="spicy" min="0" max="100" value="50"><br>
-    <input type="number" id="amount" min="0" max="100" value="50"><br>
-    <input type="number" id="strong" min="0" max="100" value="50"><br>
-    <input type="number" id="share" min="0" max="100" value="50"><br>
-    <input type="button" id="submit" onclick="showMessage()" value="送信">
+{% extends 'base.html' %}
+{% block body %}
+  <div class="p-5 mb-2 bg-primary text-white"></div>
+  <form id="form" action="/result" method="POST">
+    {% for i in range(personNum|int-1) %}
+    <div class="q">
+      <h1 id="num">{{i+1}}人目</h1><br>
+      <p>Q1.辛くない ↔ 辛い</p>
+      <input type="range" class="form-range mx-auto w-50"  name="coor"><br><br>
+      <p>Q2.みんなでシェアしたいですか？</p>
+      <input type="range" class="form-range mx-auto w-50" name="coor"><br><br>
+      <p>Q3.薄い・あっさり ↔ 濃い・こってり</p>
+      <input type="range" class="form-range mx-auto w-50" name="coor"><br><br>
+      <p>Q4.ローカロリー ↔ ハイカロリー</p>
+      <input type="range" class="form-range mx-auto w-50" name="coor"><br><br>
+      <p>Q5.今どれくらいの量を食べたいですか？</p>
+      <input type="range" class="form-range mx-auto w-50" name="coor"><br><br>
+      <input type="button" class="btn btn-outline-primary" onclick="hidshow()" value="決定">
+    </div>
+    {% endfor %}
+    <div class="q">
+      <h1 id="num">{{personNum}}人目</h1><br>
+      <p>Q1.辛くない ↔ 辛い</p>
+      <input type="range" class="form-range mx-auto w-50" name="coor"><br><br>
+      <p>Q2.みんなでシェアしたいですか？</p>
+      <input type="range" class="form-range mx-auto w-50" name="coor"><br><br>
+      <p>Q3.薄い・あっさり ↔ 濃い・こってり</p>
+      <input type="range" class="form-range mx-auto w-50" name="coor"><br><br>
+      <p>Q4.ローカロリー ↔ ハイカロリー</p>
+      <input type="range" class="form-range mx-auto w-50" name="coor"><br><br>
+      <p>Q5.今どれくらいの量を食べたいですか？</p>
+      <input type="range" class="form-range mx-auto w-50" name="coor"><br><br>
+      <input type="submit" class="btn btn-outline-primary" value="決定">
+    </div>
+    
   </form>
-  <p id="output-message0"></p>
-  <p id="output-message1"></p>
-  <p id="output-message2"></p>
-  <p id="output-message3"></p>
-  <p id="output-message4"></p>
-  <p id="hidden"></p>
+  <br></br>
+  <div class="p-5 mb-2 bg-primary text-white"><br><br><br><br></div>
   <script language="javascript" type="text/javascript">
     let count = 0;
     let personNum = {{ personNum }};
     let num = document.getElementById("num");
-    var array = [[],[],[],[],[]];
-    const showMessage = () => {
-        array[0].push(document.getElementById("calorie").value);
-        array[1].push(document.getElementById("spicy").value);
-        array[2].push(document.getElementById("amount").value);
-        array[3].push(document.getElementById("strong").value);
-        array[4].push(document.getElementById("share").value);
-        // var comp = ["calorie","spisy","amount","strong","share"];
-        // for (let i = 0; i < 5; i++){
-        //     array[i].push(document.getElementById(comp[i]).value);
-        // }
-        //出力用のp要素にメッセージを表示
-        document.getElementById("output-message0").innerHTML = array[0];
-        document.getElementById("output-message1").innerHTML = array[1];
-        document.getElementById("output-message2").innerHTML = array[2];
-        document.getElementById("output-message3").innerHTML = array[3];
-        document.getElementById("output-message4").innerHTML = array[4];
-        count = count+1
-        if (count < personNum){
-          num.innerHTML = String(count+1)+"人目"
-          document.form1.reset();
-        }else{
-          num.innerHTML = "end";
-          console.log(typeof JSON.stringify(array));
-          {# $.post('/result',JSON.stringify(array)); #}
-          {# contentType: "application/json; charset=utf-8" #}
-          $.ajax({
-            type: "POST",
-            contentType: "application/json; charset=utf-8",
-            url: "/result",
-            data: JSON.stringify(array),
-            dataType: "json"
-          });
-          {# var startMsec = new Date();
-          // 指定ミリ秒間だけループさせる（CPUは常にビジー状態）
-          while (new Date() - startMsec < 5000); #}
-          {# location.href = '/result'; #}
-        }
-    }
-    const inputElem = document.getElementById('calorieRange'); // input要素
-    const currentValueElem = document.getElementById('calorie'); // 埋め込む先の要素
-
-    // 現在の値をspanに埋め込む関数
-    const setCurrentValue = (val) => {
-      currentValueElem.value = val;
+    let elementH1 = document.querySelectorAll("div.q");
+    for (const[i,e] of elementH1.entries()){
+      e.id = `div-${i}`;
     }
 
-    // inputイベント時に値をセットする関数
-    const rangeOnChange = (e) =>{
-      setCurrentValue(e.target.value);
+    for (let i=1; i<{{personNum|int}}; i++){
+      document.getElementById(`div-${i}`).style.display = "none";
     }
-
-    window.onload = () => {
-      inputElem.addEventListener('input', rangeOnChange); // スライダー変化時にイベントを発火
-      setCurrentValue(inputElem.value); // ページ読み込み時に値をセット
+  
+    const hidshow = () => {
+      document.getElementById(`div-${count}`).style.display = "none";
+      document.getElementById(`div-${count+1}`).style.display = "";
+      count++;
     }
   </script>
-</body>
-</html>
+{% endblock %}
 

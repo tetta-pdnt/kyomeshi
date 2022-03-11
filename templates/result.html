@@ -1,10 +1,34 @@
 {% extends 'base.html' %}
-
 {% block body %}
-<h1>結果</h1>
-<p> {{ array }} </p>
-<p id="test"></p>
-{# <script language="javascript" type="text/javascript">
-document.getElementById("test").innerHTML = {{ array }};
-</script> #}
+<div class="p-5 mb-2 bg-primary text-white"></div>
+<!-- カード -->
+<div class="container py-4" id="works">
+  <h2>みんなの今日飯はこれ👇</h2><br>
+  <div class="container">
+    <div class="card-deck row">
+      <div class="card col-sm-4"><br>
+      <img src="/static/images/{{result0}}.png" class="card-img-top img-thumbnail">
+        <div class="card-body">
+          <h5 class="card-title"> {{ result0 }}</h5>
+          <a class="btn btn-primary" href="https://www.hotpepper.jp/CSP/psh010/doBasic?FWT={{result0}}&SA=SA22">近くのお店を探す</a>
+        </div>
+      </div>
+      <div class="card col-sm-4"><br>
+      <img src="/static/images/{{result1}}.png " class="card-img-top img-thumbnail">
+            <div class="card-body ">
+              <h5 class="card-title "> {{ result1 }} </h5>
+              <a class="btn btn-primary" href="https://www.hotpepper.jp/CSP/psh010/doBasic?FWT={{result1}}&SA=SA22">近くのお店を探す</a>
+            </div>
+          </div>
+        <div class="card col-sm-4"><br>
+        <img src="/static/images/{{result2}}.png" class="card-img-top img-thumbnail">
+        <div class="card-body">
+          <h5 class="card-title"> {{ result2 }} </h5>
+          <a class="btn btn-primary" href="https://www.hotpepper.jp/CSP/psh010/doBasic?FWT={{result2}}&SA=SA22">近くのお店を探す</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  <div class="p-5 mb-2 bg-primary text-white"><br><br><br></div>
 {% endblock %}
