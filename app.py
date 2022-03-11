@@ -38,7 +38,7 @@ def result():
         con = con[1:]
         dists.append(dist(coor, con))
     # s = [max(dists)-x for x in dists]
-    s = [np.exp((-int(x))^2) for x in dists]
+    s = [np.exp(-x**2/10000) for x in dists]
     prob = [x/sum(s) for x in s]
     result = np.random.choice(len(prob),size=3,p=prob,replace=False).tolist()
     result = [component[x][0] for x in result]
