@@ -164,5 +164,7 @@ div.background {
 body > div.background {
   height: auto; /* 要素を超えた分の背景が伸びないブラウザ用 */
 }
-
+html,body{
+	overflow: hidden
+  }
 
