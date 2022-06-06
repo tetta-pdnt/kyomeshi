@@ -77,6 +77,12 @@ def result():
     return render_template('/result.html',result0=result[0],
                                           result1=result[1],
                                           result2=result[2])
+@app.route('/showmap',methods=['POST'])
+def showmap():
+    longi  = request.form.get('longi')
+    lati = request.form.get('lati')
+    print(lati,longi)
+    return render_template('/showmap.html',longi=longi,lati=lati)
 
 if __name__ == "__main__":
     app.run()

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block head%}
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css" rel="stylesheet" />
+<style>
+    html { height: 100% }
+    body { height: 100% }
+    #map { height: 100%; width: 100%}
+</style>
+{% endblock%}
+{% block body %}
+{# <button onclick="test()">test</button>
+    <div class="p-3 mb-2 bg-primary text-white d-none d-md-block">
+    <img src="/static/images/title.png" height="250px" class="img-responsive center-block"></div>
+    <div class="p-3 mb-2 bg-primary text-white d-md-none">
+    <img src="/static/images/title.png" height="150px" class="img-responsive center-block"></div>
+    <br>
+    <h2>地図</h2>
+    <br>
+    <h4>
+        複数人の食の嗜好や気分を測定して
+        <br>
+        みんなの意見に合った料理を提案してくれるアプリ！！
+    </h4>
+    <div class="cp_arrows">
+        <a href="#" class="cp_arrow"></a>
+    </div>
+    <div>
+
+            <form action="/choice" method="POST">
+                        <select class="form-select mx-auto" style="width: 200px;" name="personNum">
+                        <option selected hidden>人数を選んでね</option>
+                        {%for i in range(1,11)%}
+                        <option value="{{i}}">{{i}}</option>
+                        {%endfor%}
+                        </select>
+
+                <br><input type="submit" class="btn btn-outline-primary" value="つかってみる">
+            </form>
+
+    </div> #}
+<p>これ{{lati}},{{longi}}</p>
+<div id='map'></div>
+
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoidGV0dGEtcGRudCIsImEiOiJjbDNzZDBranUxbHdwM3FwbmhnMnoxZnVvIn0.VCOORYtsppjVpoEhHpKjKg';
+
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [{{longi}},{{lati}}],
+        zoom: 15
+    });
+</script>
+<br>
+</br>
+<div class="p-5 mb-2 bg-primary text-white"></div>
+{# <img src="/static/images/top.jpg" class="image-vw"> #}
+{% endblock %}

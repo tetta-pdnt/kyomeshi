@@ -1,35 +1,36 @@
 {% extends 'base.html' %}
 {% block body %}
-    <div class="p-3 mb-2 bg-primary text-white d-none d-md-block">
-    <img src="/static/images/title.png" height="250px" class="img-responsive center-block"></div>
-    <div class="p-3 mb-2 bg-primary text-white d-md-none">
-    <img src="/static/images/title.png" height="150px" class="img-responsive center-block"></div>
+<div class="p-3 mb-2 bg-primary text-white d-none d-md-block">
+<img src="/static/images/title.png" height="250px" class="img-responsive center-block"></div>
+<div class="p-3 mb-2 bg-primary text-white d-md-none">
+<img src="/static/images/title.png" height="150px" class="img-responsive center-block"></div>
+<br>
+<h2>「今日飯」ってなに？？</h2>
+<br>
+<h4>
+    複数人の食の嗜好や気分を測定して
     <br>
-    <h2>「今日飯」ってなに？？</h2>
-    <br>
-    <h4>
-        複数人の食の嗜好や気分を測定して
-        <br>
-        みんなの意見に合った料理を提案してくれるアプリ！！
-    </h4>
-    <div class="cp_arrows">
-        <a href="#" class="cp_arrow"></a>
-    </div>
-    <div>
+    みんなの意見に合った料理を提案してくれるアプリ！！
+</h4>
+<div class="cp_arrows">
+    <a href="#" class="cp_arrow"></a>
+</div>
+<div>
 
-            <form action="/choice" method="POST">
-                        <select class="form-select mx-auto" style="width: 200px;" name="personNum">
-                        <option selected hidden>人数を選んでね</option>
-                        {%for i in range(1,11)%}
-                        <option value="{{i}}">{{i}}</option>
-                        {%endfor%}
-                        </select>
+        <form action="/choice" method="POST">
+                    <select class="form-select mx-auto" style="width: 200px;" name="personNum">
+                    <option selected hidden>人数を選んでね</option>
+                    {%for i in range(1,11)%}
+                    <option value="{{i}}">{{i}}</option>
+                    {%endfor%}
+                    </select>
 
-                <br><input type="submit" class="btn btn-outline-primary" value="つかってみる">
-            </form>
+            <br><input type="submit" class="btn btn-outline-primary" value="つかってみる">
+        </form>
 
-    </div>
+</div>
 <br>
 </br>
 <div class="p-5 mb-2 bg-primary text-white"></div>
+{# <img src="/static/images/top.jpg" class="image-vw"> #}
 {% endblock %}
