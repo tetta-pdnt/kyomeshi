@@ -156,10 +156,10 @@ div.background {
 }
  
 div.background {
-  min-height: 100%; /* 最小の高さ */
-  width: 300px;
-  background: #EFEFEF;
-}
+	min-height: 100%; /* 最小の高さ */
+	width: 300px;
+	background: #EFEFEF;
+  }
  
 body > div.background {
   height: auto; /* 要素を超えた分の背景が伸びないブラウザ用 */
@@ -171,3 +171,108 @@ body > div.background {
 width : 80vw;
  
 }
+.wrapper{
+    min-height: 100vh;
+    position: relative;/*←相対位置*/
+    padding-bottom: 120px;/*←footerの高さ*/
+    box-sizing: border-box;/*←全て含めてmin-height:100vhに*/
+}
+
+footer{
+    width: 100%;
+    background-color: #ff810a;
+    color: #fff;
+    text-align: center;
+    padding: 30px 0;
+
+ position: absolute;/*←絶対位置*/
+    bottom: 0; /*下に固定*/
+}
+
+/* #map {
+  position: absolute;
+  top: 50px;
+  bottom: 0;
+  width: 100%;
+}
+
+.marker-container {
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  cursor: pointer;
+}
+
+.marker-title {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.marker-icon {
+  height: 30px; 
+  width: auto; 
+  background-size: cover;
+}
+
+.mapboxgl-popup {
+  max-width: 200px;
+}
+
+.mapboxgl-popup-content {
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+} */
+
+
+  #map { position:absolute; top:50px; bottom:0; width:100%; }
+  
+
+  
+  .marker {
+	background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/8426/map-marker.svg');
+	background-size: cover;
+	width: 30px;
+	height: 50px;
+	cursor: pointer;
+  }
+  .marker2 {
+	background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24"><path fill="%23ff0000" d="M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z" /></svg>');
+	background-size: cover;
+	width: 50px;
+	height: 50px;
+	cursor: pointer;
+  }
+  
+  /* Zoom Contrial */
+  .mapboxgl-ctrl-group {
+	  border-radius: 0px;
+	  -moz-box-shadow: 0px 0px 2px rgba(0,0,0,0.1);
+	  -webkit-box-shadow: 0px 0px 2px rgba(0,0,0,0.1);
+	  box-shadow: 0px 0px 0px 2px rgba(0,0,0,0.1);
+	  overflow: hidden;
+	  background: #fff;
+  }
+  
+  .mapboxgl-ctrl-group > button {
+	  width: 30px;
+	  height: 30px;
+	  display: block;
+	  padding: 0;
+	  outline: none;
+	  border: none;
+	  border-bottom: 1px solid #ddd;
+	  box-sizing: border-box;
+	  background-color: rgba(0,0,0,0);
+	  cursor: pointer;
+  }
+  
+  body {
+	display: flex;
+	flex-flow: column;
+	min-height: 100vh;
+  }
+  main {
+	flex: 1;
+  }

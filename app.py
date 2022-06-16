@@ -1,9 +1,12 @@
 from flask import Flask, render_template, request
+import requests
+import json
 import numpy as np
 import pandas as pd
 from math import dist
 # config.py
 import config
+from pprint import pprint
 
 app = Flask(__name__)
 
@@ -45,44 +48,62 @@ def result():
     # result = []
     # dists.sort(key=lambda x:x[1])
     # result = [component[x[0]][0] for x in dists[:3]]
-
-    # api_key = config.HOTPEPPER_API_KEY
-
-    # i_start = 1
-    # restaurant_datas=[]
-
-    # while True:
-    #     query = {
-    #         'key': api_key,
-    #         'large_area': 'Z011', # 東京
-    #         'order': 1, #名前の順
-    #         'start': i_start, #検索結果の何番目から出力するか
-    #         'count': 100, #最大取得件数
-    #         'format': 'json',
-    #         'keyword': result[0]
-    #     }
-    #     url_base = 'http://webservice.recruit.co.jp/hotpepper/gourmet/v1/'
-    #     responce = requests.get(url_base, query)
-    #     result = json.loads(responce.text)['results']['shop']
-    #     if len(result) == 0:
-    #         break
-    #     for restaurant in result:
-    #         restaurant_datas.append([restaurant['name'], restaurant['address'], restaurant['budget']['code'], restaurant['genre']['code']])
-    #     i_start += 100
-    #     print(i_start)
-
-    # columns = ['name', 'address', 'budget', 'genre']
-    # df_restaurants = pd.DataFrame(restaurant_datas, columns=columns)
-    # df_restaurants.to_csv('restaurants_tokyo.csv')
     return render_template('/result.html',result0=result[0],
                                           result1=result[1],
                                           result2=result[2])
+
 @app.route('/showmap',methods=['POST'])
 def showmap():
     longi  = request.form.get('longi')
     lati = request.form.get('lati')
-    print(lati,longi)
-    return render_template('/showmap.html',longi=longi,lati=lati)
+    # longi = 139.692
+    # lati = 35.689
+
+    api_key = config.HOTPEPPER_API_KEY
+
+    i_start = 1
+    restaurant_datas=[]
+    # url = 'http://webservice.recruit.co.jp/hotpepper/genre/v1/'
+    # responce = requests.get(url, {'key': api_key,'format': 'json'})
+    # result = json.loads(responce.text)['results']['genre']
+    # if len(result) == 0:
+    #     print("no match")
+    # for restaurant in result:
+    #     restaurant_datas.append([restaurant['code'], restaurant['name']])
+    # pprint(result)
+    while True:
+        query = {
+            'key': api_key,
+            # 'lat': 35.689,
+            # 'lng': 139.692,
+            'lat': lati,
+            'lng': longi,
+            'range': 5,
+            'start': i_start, #検索結果の何番目から出力するか
+            'count': 100, #最大取得件数
+            'format': 'json',
+            # 'keyword': 'カリー'
+            'keyword': request.form.get('result')
+        }
+        url_base = 'http://webservice.recruit.co.jp/hotpepper/gourmet/v1/'
+        responce = requests.get(url_base, query)
+        result = json.loads(responce.text)['results']['shop']
+        if len(result) == 0:
+            break
+        for restaurant in result:
+            restaurant_datas.append([restaurant['name'], restaurant['lat'],
+            restaurant['lng'],
+            restaurant['address'],
+            restaurant['urls']['pc']])
+
+        i_start += 100
+
+    columns = ['name','lat','lng','address','url']
+    df_restaurants = pd.DataFrame(restaurant_datas, columns=columns)
+    # df_restaurants.to_csv('restaurants_tokyo.csv')
+    # pprint(df_restaurants)
+    # print(lati,longi)
+    return render_template('/showmap.html',result=df_restaurants.to_json(orient = 'records',force_ascii=False),longi=longi,lati=lati,n=request.form.get('result'))
 
 if __name__ == "__main__":
     app.run()
