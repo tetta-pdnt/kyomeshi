@@ -9,6 +9,23 @@ import config
 
 app = Flask(__name__)
 
+def hp_api(lati,longi,i_start,count,key):
+    api_key = config.HOTPEPPER_API_KEY
+    query = {
+        'key': api_key,
+        'lat': lati,
+        'lng': longi,
+        'range': 5,
+        'start': i_start, #検索結果の何番目から出力するか
+        'count': count, #最大取得件数
+        'format': 'json',
+        'keyword': key
+    }
+    url_base = 'http://webservice.recruit.co.jp/hotpepper/gourmet/v1/'
+    responce = requests.get(url_base, query)
+    result = json.loads(responce.text)['results']['shop']
+    return result
+
 @app.route('/')
 def index():
     return render_template('/index.html')
@@ -41,9 +58,18 @@ def result():
     # s = [max(dists)-x for x in dists]
     s = [np.exp(-x**2/10000) for x in dists]
     prob = [x/sum(s) for x in s]
-    result = np.random.choice(len(prob),size=3,p=prob,replace=False).tolist()
+    result = np.random.choice(len(prob),size=len(component),p=prob,replace=False).tolist()
     result = [component[x][0] for x in result]
 
+    longi  = request.form.get('longi')
+    lati = request.form.get('lati')
+    for i,r in enumerate(result):
+        api_ret = hp_api(lati,longi,1,1,r)
+        if len(api_ret):
+            result = result[i:i+3]
+            break
+    else:
+        return render_template('/index.html')
     return render_template('/result.html',result0=result[0],
                                           result1=result[1],
                                           result2=result[2])
@@ -54,25 +80,11 @@ def showmap():
     lati = request.form.get('lati')
     # longi = 139.692
     # lati = 35.689
-
-    api_key = config.HOTPEPPER_API_KEY
-
     i_start = 1
+    key = request.form.get('result')
     restaurant_datas=[]
     while True:
-        query = {
-            'key': api_key,
-            'lat': lati,
-            'lng': longi,
-            'range': 5,
-            'start': i_start, #検索結果の何番目から出力するか
-            'count': 100, #最大取得件数
-            'format': 'json',
-            'keyword': request.form.get('result')
-        }
-        url_base = 'http://webservice.recruit.co.jp/hotpepper/gourmet/v1/'
-        responce = requests.get(url_base, query)
-        result = json.loads(responce.text)['results']['shop']
+        result = hp_api(lati,longi,i_start,100,key)
         if len(result) == 0:
             break
         for restaurant in result:

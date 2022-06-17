@@ -30,7 +30,7 @@
       <input type="range" class="form-range mx-auto w-50" name="coor"><br><br>
       <p>Q5.量を少なくしたい ↔ 量を多く食べたい</p>
       <input type="range" class="form-range mx-auto w-50" name="coor"><br><br>
-      <input type="submit" class="btn btn-outline-primary" value="決定">
+      <input type="button" class="btn btn-outline-primary" value="決定" onclick="loc();" />
     </div>
     
   </form>
@@ -53,6 +53,33 @@
       document.getElementById(`div-${count}`).style.display = "none";
       document.getElementById(`div-${count+1}`).style.display = "";
       count++;
+    }
+  </script>
+  <script>
+    function loc() {
+        navigator.geolocation.getCurrentPosition(post_req);
+    }
+
+    function post_req(position) {
+        var lati = position.coords.latitude;
+        var longi = position.coords.longitude;
+        var form = document.getElementById('form');
+        var request1 = document.createElement('input');
+        var request2 = document.createElement('input');
+        form.method = 'POST';
+        form.action = '/result';
+
+        request1.type = 'hidden';
+        request1.name = 'longi';
+        request1.value = longi;
+
+        request2.type = 'hidden';
+        request2.name = 'lati';
+        request2.value = lati;
+
+        form.appendChild(request1);
+        form.appendChild(request2);
+        form.submit();
     }
   </script>
 {% endblock %}
