@@ -1,21 +1,16 @@
-{% extends 'base.html' %} {% block head%}
+{% extends 'base.html' %}
+{% block head%}
 <script src="https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js"></script>
 <link href="https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css" rel="stylesheet" />
 {% endblock%} {% block body %}
-<div class="p-5 mb-2 bg-primary text-white"></div>
-<br><br><h4 id=res></h4>
+<div class="p-5 mb-2 bg-primary text-white"></div><br><br>
+<h4 id=res></h4>
 <p id="link"></p>
 <div id='map'></div>
-<template id="marker">
-  <div class="marker-container">
-    <span id="title" class="marker-title"></span>
-    <img id="marker-icon" src="https://img.icons8.com/ios-filled/40/0000FF/marker.png">
-  </div>
-</template>
 <script>
   let geojson = {
-  type: 'FeatureCollection',
-  features: []
+    type: 'FeatureCollection',
+    features: []
   };
   function showmap(result){
     result = JSON.parse(result);
@@ -34,49 +29,45 @@
       }
     };
 
-
-
     mapboxgl.accessToken = 'pk.eyJ1IjoidGV0dGEtcGRudCIsImEiOiJjbDNzZDBranUxbHdwM3FwbmhnMnoxZnVvIn0.VCOORYtsppjVpoEhHpKjKg';
 
     let map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v11',
-        center: [{{longi}},{{lati}}],
-        zoom: 13
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [{{longi}},{{lati}}],
+      zoom: 13
     });
 
 
 
-  // create a HTML element for each feature
-  var el2 = document.createElement('div');
-  el2.className = 'marker2';
+    // create a HTML element for each feature
+    var el2 = document.createElement('div');
+    el2.className = 'marker2';
+    
+    // make a marker for each feature and add to the map
+    new mapboxgl.Marker(el2, { offset: [-0 / 0.5, -0 / 0.5] })
+    .setLngLat([{{longi}},{{lati}}])
+    .addTo(map);
+
+    // add markers to map
+    geojson.features.forEach(function(marker) {
+
+      // create a HTML element for each feature
+      var el = document.createElement('div');
+      el.className = 'marker';
+      
+
+      // make a marker for each feature and add to the map
+      new mapboxgl.Marker(el, { offset: [-0 / 0.5, -0 / 0.5] })
+      .setLngLat(marker.geometry.coordinates)
+      .setPopup(new mapboxgl.Popup({ offset: 40 }) // add popups
+      .setHTML('<h3>' + marker.properties.title + '</h3><p>' + marker.properties.description + '</p><a href='+marker.properties.url+' class="btn btn-primary">詳細</a>'))
+      .addTo(map);
+    });
+
+
+  };
   
-
-  // make a marker for each feature and add to the map
-  new mapboxgl.Marker(el2, { offset: [-0 / 0.5, -0 / 0.5] })
-  .setLngLat([{{longi}},{{lati}}])
-  .addTo(map);
-
-// add markers to map
-geojson.features.forEach(function(marker) {
-
-  // create a HTML element for each feature
-  var el = document.createElement('div');
-  el.className = 'marker';
-  
-
-  // make a marker for each feature and add to the map
-  new mapboxgl.Marker(el, { offset: [-0 / 0.5, -0 / 0.5] })
-  .setLngLat(marker.geometry.coordinates)
-  .setPopup(new mapboxgl.Popup({ offset: 40 }) // add popups
-  .setHTML('<h3>' + marker.properties.title + '</h3><p>' + marker.properties.description + '</p><a href='+marker.properties.url+' class="btn btn-primary">詳細</a>'))
-  .addTo(map);
-});
-
-
-};
-</script>
-<script>
   let elm = document.getElementById('res');
   let result =  JSON.parse({{result|tojson}});
   let len = Object.keys(result).length;
@@ -93,11 +84,8 @@ geojson.features.forEach(function(marker) {
     document.getElementById('link').appendChild(anchor);
 
   }else{
-
     showmap(result);
   }
-</script> <br> </br>
-<footer>
-</footer>
-
+</script> <br><br>
+<footer> </footer>
 {% endblock %}

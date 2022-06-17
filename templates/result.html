@@ -1,6 +1,4 @@
-{% extends 'base.html' %}
-
-{% block body %}
+{% extends 'base.html' %} {% block body %}
 <div class="p-5 mb-2 bg-primary text-white"></div>
 <!-- カード -->
 <div class="container py-4" id="works">
@@ -8,73 +6,70 @@
   <div class="container">
     <div class="card-deck row">
       <div class="card col-sm-4"><br>
-      <img src="/static/images/{{result0}}.png" class="card-img-top img-thumbnail">
+        <img src="/static/images/{{result0}}.png" class="card-img-top img-thumbnail" />
         <div class="card-body">
-          <h5 class="card-title"> {{ result0 }}</h5>
-          {# <a class="btn btn-primary" href="https://www.hotpepper.jp/SA22/fwt{{result0}}/">近くのお店を探す</a> #}
-          <input type="button" class="btn btn-primary" value="近くのお店を探す" onclick="test(0);"/>
+          <h5 class="card-title">{{ result0 }}</h5>
+          <input type="button" class="btn btn-primary" value="近くのお店を探す" onclick="loc(0);" />
         </div>
       </div>
       <div class="card col-sm-4"><br>
-      <img src="/static/images/{{result1}}.png " class="card-img-top img-thumbnail">
-            <div class="card-body ">
-              <h5 class="card-title "> {{ result1 }} </h5>
-              {# <a class="btn btn-primary" href="https://www.hotpepper.jp/SA22/fwt{{result1}}/">近くのお店を探す</a> #}
-              <input type="button" class="btn btn-primary" value="近くのお店を探す" onclick="test(1);"/>
-            </div>
-          </div>
-        <div class="card col-sm-4"><br>
-        <img src="/static/images/{{result2}}.png" class="card-img-top img-thumbnail">
+        <img src="/static/images/{{result1}}.png " class="card-img-top img-thumbnail" />
         <div class="card-body">
-          <h5 class="card-title"> {{ result2 }} </h5>
-          {# <a class="btn btn-primary" href="https://www.hotpepper.jp/SA22/fwt{{result2}}/">近くのお店を探す</a> #}
-          <input type="button" class="btn btn-primary" value="近くのお店を探す" onclick="test(2);"/>
+          <h5 class="card-title">{{ result1 }}</h5>
+          <input type="button" class="btn btn-primary" value="近くのお店を探す" onclick="loc(1);" />
+        </div>
+      </div>
+      <div class="card col-sm-4"><br>
+        <img src="/static/images/{{result2}}.png" class="card-img-top img-thumbnail" />
+        <div class="card-body">
+          <h5 class="card-title">{{ result2 }}</h5>
+          <input type="button" class="btn btn-primary" value="近くのお店を探す" onclick="loc(2);" />
         </div>
       </div>
     </div>
   </div>
 </div>
 <p>Powered by <a href="http://webservice.recruit.co.jp/">ホットペッパー Webサービス</a></p>
-  <div class="p-5 mb-2 bg-primary text-white"><br><br></div>
+<div class="p-5 mb-2 bg-primary text-white"><br><br></div>
 <script>
-var i
-function test(ch) {
-    i = ch
-    navigator.geolocation.getCurrentPosition(test2);
-}
+  var i
+  function loc(r) {
+      i = r
+      navigator.geolocation.getCurrentPosition(post_req);
+  }
 
-function test2(position) {
-    var lati = position.coords.latitude;
-    var longi = position.coords.longitude;
-    var form = document.createElement('form');
-    var request1 = document.createElement('input');
-    var request2 = document.createElement('input');
-    var request3 = document.createElement('input');
-    form.method = 'POST';
-    form.action = '/showmap';
- 
-    request1.type = 'hidden';
-    request1.name = 'longi';
-    request1.value = longi;
+  function post_req(position) {
+      var lati = position.coords.latitude;
+      var longi = position.coords.longitude;
+      var form = document.createElement('form');
+      var request1 = document.createElement('input');
+      var request2 = document.createElement('input');
+      var request3 = document.createElement('input');
+      form.method = 'POST';
+      form.action = '/showmap';
 
-    request2.type = 'hidden';
-    request2.name = 'lati';
-    request2.value = lati;
+      request1.type = 'hidden';
+      request1.name = 'longi';
+      request1.value = longi;
 
-    request3.type = 'hidden';
-    request3.name = 'result';
-     if (i==0){
-      request3.value = {{ result0 | tojson }};
-    }else if(i==1){
-      request3.value = {{ result1 | tojson }};
-    }else{
-      request3.value = {{ result2 | tojson }};
-    }
-    form.appendChild(request1);
-    form.appendChild(request2);
-    form.appendChild(request3);
-    document.body.appendChild(form);
-    form.submit();
-}
+      request2.type = 'hidden';
+      request2.name = 'lati';
+      request2.value = lati;
+
+      request3.type = 'hidden';
+      request3.name = 'result';
+       if (i==0){
+        request3.value = {{ result0 | tojson }};
+      }else if(i==1){
+        request3.value = {{ result1 | tojson }};
+      }else{
+        request3.value = {{ result2 | tojson }};
+      }
+      form.appendChild(request1);
+      form.appendChild(request2);
+      form.appendChild(request3);
+      document.body.appendChild(form);
+      form.submit();
+  }
 </script>
 {% endblock %}

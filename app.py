@@ -6,10 +6,8 @@ import pandas as pd
 from math import dist
 # config.py
 import config
-from pprint import pprint
 
 app = Flask(__name__)
-
 
 @app.route('/')
 def index():
@@ -45,9 +43,7 @@ def result():
     prob = [x/sum(s) for x in s]
     result = np.random.choice(len(prob),size=3,p=prob,replace=False).tolist()
     result = [component[x][0] for x in result]
-    # result = []
-    # dists.sort(key=lambda x:x[1])
-    # result = [component[x[0]][0] for x in dists[:3]]
+
     return render_template('/result.html',result0=result[0],
                                           result1=result[1],
                                           result2=result[2])
@@ -63,26 +59,15 @@ def showmap():
 
     i_start = 1
     restaurant_datas=[]
-    # url = 'http://webservice.recruit.co.jp/hotpepper/genre/v1/'
-    # responce = requests.get(url, {'key': api_key,'format': 'json'})
-    # result = json.loads(responce.text)['results']['genre']
-    # if len(result) == 0:
-    #     print("no match")
-    # for restaurant in result:
-    #     restaurant_datas.append([restaurant['code'], restaurant['name']])
-    # pprint(result)
     while True:
         query = {
             'key': api_key,
-            # 'lat': 35.689,
-            # 'lng': 139.692,
             'lat': lati,
             'lng': longi,
             'range': 5,
             'start': i_start, #検索結果の何番目から出力するか
             'count': 100, #最大取得件数
             'format': 'json',
-            # 'keyword': 'カリー'
             'keyword': request.form.get('result')
         }
         url_base = 'http://webservice.recruit.co.jp/hotpepper/gourmet/v1/'
@@ -100,9 +85,6 @@ def showmap():
 
     columns = ['name','lat','lng','address','url']
     df_restaurants = pd.DataFrame(restaurant_datas, columns=columns)
-    # df_restaurants.to_csv('restaurants_tokyo.csv')
-    # pprint(df_restaurants)
-    # print(lati,longi)
     return render_template('/showmap.html',result=df_restaurants.to_json(orient = 'records',force_ascii=False),longi=longi,lati=lati,n=request.form.get('result'))
 
 if __name__ == "__main__":
